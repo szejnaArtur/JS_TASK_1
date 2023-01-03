@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="style/style.css"/>
+    <title>Zadanie JavaScript - Artur Szejna</title>
+
+</head>
+<body>
+<div class="app">
+    <nav class="nav">
+        <ul id="navigation">
+            <li><a id="refresh">Odswież</a></li>
+            <li><a id="add">Dodaj</a></li>
+        </ul>
+    </nav>
+
+    <section class="dead-background display-none" id="user-form">
+        <form class="user-form" >
+            <div class="btn-container">
+                <button id="save" type="button" class="btn btn-save">Dodaj</button>
+                <button id="edit" type="button" class="btn btn-save display-none">Zapisz</button>
+                <button id="delete" type="button" class="btn btn-delete display-none">Usuń</button>
+                <button id="cancel" type="button" class="btn btn-cancel">Zamknij</button>
+            </div>
+            <label for="name">Imię</label>
+            <input type="text" id="name"/>
+            <label for="surname">Nazwisko</label>
+            <input type="text" id="surname"/>
+            <label for="sex">Płeć</label>
+            <select id="sex">
+                <option>Kobieta</option>
+                <option>Mężczyzna</option>
+            </select>
+            <label for="date-of-birth">Data urodzenia</label>
+            <input type="date" id="date-of-birth"/>
+            <label for="email">Email</label>
+            <input type="email" id="email"/>
+        </form>
+    </section>
+
+    <section class="user-list">
+        <ul id="user-list">
+            <span>This is empty user list!</span>
+        </ul>
+    </section>
+
+</div>
+<script type="text/javascript" src="scripts/model.js"></script>
+<script type="text/javascript" src="scripts/view.js"></script>
+<script type="text/javascript" src="scripts/controller.js"></script>
+</body>
+</html>
