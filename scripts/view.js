@@ -1,5 +1,6 @@
 class View {
     constructor() {
+        console.log("view")
         this.userList = document.getElementById("user-list");
 
         this.saveBtn = document.getElementById('save');
@@ -19,6 +20,48 @@ class View {
     attachEvents() {
         this.cancelBtn.addEventListener('click', this._closeUserForm);
         this.addBtn.addEventListener('click', () => this._showUserForm(null));
+    }
+
+    displayUsers(users) {
+        this._clearList();
+        this._closeUserForm();
+        if (users.length !== 0) {
+            users.forEach(user => {
+                const li = this._createElement('li');
+                li.id = user.id;
+                li.textContent = user.name + " " + user.surname;
+                li.addEventListener('click', () => this._showUserForm(user));
+                this.userList.append(li);
+            })
+        } else {
+            const span = this._createElement('p');
+            span.textContent = "Brak użytkowników.";
+            this.userList.append(span);
+        }
+        console.log("User list refreshed.");
+    }
+
+
+    /*
+    * // -- PRIVATE METHODS -- //
+    *
+    * - Private methods start with "_" so that it is easy to distinguish between them.
+    * */
+
+    _resetInputs() {
+        this.name.value = "";
+        this.surname.value = "";
+        this.sex.value = "Kobieta";
+        this.dateOfBirth.value = "";
+        this.email.value = "";
+    }
+
+    _fillInputs(user) {
+        this.name.value = user.name;
+        this.surname.value = user.surname;
+        this.sex.value = user.sex;
+        this.dateOfBirth.value = user.dateOfBirth;
+        this.email.value = user.email;
     }
 
     _showUserForm(user) {
@@ -53,19 +96,16 @@ class View {
         }
     }
 
-    _resetInputs() {
-        this.name.value = "";
-        this.surname.value = "";
-        this.sex.value = "Kobieta";
-        this.dateOfBirth.value = "";
-        this.email.value = "";
+    _clearList() {
+        let range = document.createRange();
+        range.selectNodeContents(this.userList);
+        range.deleteContents();
     }
 
-    _fillInputs(user) {
-        this.name.value = user.name;
-        this.surname.value = user.surname;
-        this.sex.value = user.sex;
-        this.dateOfBirth.value = user.dateOfBirth;
-        this.email.value = user.email;
+    _createElement(tag, className) {
+        const element = document.createElement(tag);
+        if (className) element.classList.add(className);
+        return element;
     }
+
 }
