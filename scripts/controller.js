@@ -1,6 +1,5 @@
 class Controller {
     constructor(model, view) {
-        console.log("controller")
         this.model = model;
         this.view = view;
 
@@ -10,21 +9,29 @@ class Controller {
 
         this.model.bindUserListChanged(this.onUserListChanged);
         this.view.bindAddUser(this.handleAddUser);
+        this.view.bindUpdateUser(this.handleUpdateUser);
+        this.view.bindDeleteUser(this.handleDeleteUser);
+        this.view.bindRefreshUserList(this.handleRefreshUser);
     }
 
     onUserListChanged = (users) => {
-        console.log("On user list changed.")
-        console.log(users);
         this.view.displayUsers(users);
     }
 
     handleRefreshUser = async () => {
-        console.log("User refresher.")
         this.onUserListChanged(await this.model.getUsers());
     }
 
     handleAddUser = (userDetails) => {
         this.model.createUser(userDetails).catch(err => console.log(err.message));
+    }
+
+    handleUpdateUser = (id, userDetails) => {
+        this.model.updateUser(id, userDetails).catch(err => console.log(err.message));
+    }
+
+    handleDeleteUser = (id) => {
+        this.model.deleteUser(id).catch(err => console.log(err.message));
     }
 }
 

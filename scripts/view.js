@@ -1,6 +1,5 @@
 class View {
     constructor() {
-        console.log("view")
         this.userList = document.getElementById("user-list");
 
         this.saveBtn = document.getElementById('save');
@@ -53,6 +52,28 @@ class View {
                 this._resetInputs();
             }
         })
+    }
+
+    bindUpdateUser = (handler) => {
+        this.editBtn.addEventListener('click', () => {
+            const userDetails = this._getDetails;
+            if (userDetails.message) {
+                alert(userDetails.message);
+            } else {
+                handler(parseInt(this.saveBtn.name), this._getDetails);
+                this._resetInputs();
+            }
+        })
+    }
+
+    bindDeleteUser = (handler) => {
+        this.deleteBtn.addEventListener('click', () => {
+            handler(parseInt(this.deleteBtn.name));
+        })
+    }
+
+    bindRefreshUserList(handler) {
+        this.refreshBtn.addEventListener('click', () => handler())
     }
 
 
@@ -129,10 +150,10 @@ class View {
         const dateOfBirth = this.dateOfBirth.value;
         const email = this.email.value;
 
-        if (firstName < 3) {
+        if (firstName.length < 3) {
             return {message: "Imię powino mieć 3 lub wiecej znaków."};
         }
-        if (lastName < 3) {
+        if (lastName.length < 3) {
             return {message: "Nazwisko powino mieć 3 lub wiecej znaków."};
         }
 

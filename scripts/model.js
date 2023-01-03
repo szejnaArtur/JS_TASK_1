@@ -1,34 +1,15 @@
 class Model {
     constructor() {
-        console.log("model")
         this.users = this.asyncLocalStorage.getUsers('users')
             .then(response => {
                 if (response) {
                     console.log("import users from local storage.")
                     return JSON.parse(response);
                 } else {
-                    console.log("create user.")
+                    console.log("create empty user list.")
                     return [];
                 }
             });
-    }
-
-    async createUser(userDetails){
-
-        let newUsers = await this.users;
-
-        const newUser = new User(
-            userDetails.firstName,
-            userDetails.lastName,
-            userDetails.gender,
-            userDetails.dateOfBirth,
-            userDetails.email
-        );
-
-        newUser.setId(newUsers.length > 0 ? newUsers[newUsers.length - 1].id + 1 : 1);
-        newUsers.push(newUser);
-        this.users = newUsers;
-        this._commit(this.users);
     }
 
     asyncLocalStorage = {
@@ -40,14 +21,54 @@ class Model {
         }
     };
 
+    async createUser(userDetails){
+
+        let newUsers = await this.users;
+
+        const newUser = {
+            id: (newUsers.length > 0 ? newUsers[newUsers.length - 1].id + 1 : 1),
+            firstName: userDetails.firstName,
+            lastName: userDetails.lastName,
+            gender: userDetails.gender,
+            dateOfBirth: userDetails.dateOfBirth,
+            email: userDetails.email
+        };
+
+        newUsers.push(newUser);
+        this.users = newUsers;
+        this._commit(this.users);
+    }
+
+    async updateUser(id, userDetails) {
+
+        let newUsers = await this.users;
+
+        this.users = newUsers.map(user => user.id === id ? {
+            id,
+            firstName: userDetails.firstName,
+            lastName: userDetails.lastName,
+            gender: userDetails.gender,
+            dateOfBirth: userDetails.dateOfBirth,
+            email: userDetails.email
+        } : user);
+        this._commit(this.users);
+    }
+
+    async deleteUser(id) {
+        let newUsers = await this.users;
+        this.users = newUsers.filter(user => user.id !== id);
+        this._commit(this.users);
+    }
+
     bindUserListChanged(callback) {
         this.onUserListChanged = callback;
     }
 
     async getUsers() {
-        return await this.users.then(result => result);
+        return this.users;
     }
 
+    //PRIVATE FUNCTION
     _commit(users) {
         this.onUserListChanged(users);
         this.asyncLocalStorage.setUsers("users", users)
@@ -55,7 +76,7 @@ class Model {
             .catch(err => console.log(err.message));
     }
 
-    // -- function to generate users -- for developers -- (for use in the console)
+    // -- function to generate random user -- for developers -- (for use in the console)
     async generateUsers() {
         const users = await fetch('https://randomuser.me/api/?results=1')
             .then(response => response.json())
@@ -73,7 +94,6 @@ class Model {
                 dateOfBirth,
                 email: user.email,
             }
-            console.log(newUser)
             this.createUser(newUser);
         });
     }
