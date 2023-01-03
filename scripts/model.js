@@ -1,15 +1,6 @@
 class Model {
     constructor() {
-        this.users = this.asyncLocalStorage.getUsers('users')
-            .then(response => {
-                if (response) {
-                    console.log("import users from local storage.")
-                    return JSON.parse(response);
-                } else {
-                    console.log("create empty user list.")
-                    return [];
-                }
-            });
+        this.users = this.getUsers();
     }
 
     asyncLocalStorage = {
@@ -20,6 +11,19 @@ class Model {
             return localStorage.getItem(key);
         }
     };
+
+    async getUsers() {
+        return this.asyncLocalStorage.getUsers('users')
+            .then(response => {
+                if (response) {
+                    console.log("import users from local storage.");
+                    return JSON.parse(response);
+                } else {
+                    console.log("create empty user list.");
+                    return [];
+                }
+            });
+    }
 
     async createUser(userDetails){
 
@@ -64,10 +68,6 @@ class Model {
         this.onUserListChanged = callback;
     }
 
-    async getUsers() {
-        return this.users;
-    }
-
     //PRIVATE FUNCTION
     _commit(users) {
         this.onUserListChanged(users);
@@ -77,7 +77,7 @@ class Model {
     }
 
     // -- function to generate random user -- for developers -- (for use in the console)
-    async generateUsers() {
+    async generateUser() {
         const users = await fetch('https://randomuser.me/api/?results=1')
             .then(response => response.json())
             .then(data => data.results)
