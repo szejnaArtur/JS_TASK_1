@@ -13,6 +13,24 @@ class Model {
             });
     }
 
+    async createUser(userDetails){
+
+        let newUsers = await this.users;
+
+        const newUser = new User(
+            userDetails.firstName,
+            userDetails.lastName,
+            userDetails.gender,
+            userDetails.dateOfBirth,
+            userDetails.email
+        );
+
+        newUser.setId(newUsers.length > 0 ? newUsers[newUsers.length - 1].id + 1 : 1);
+        newUsers.push(newUser);
+        this.users = newUsers;
+        this._commit(this.users);
+    }
+
     asyncLocalStorage = {
         setUsers: async function (key, value) {
             return localStorage.setItem(key, JSON.stringify(value));
@@ -30,23 +48,6 @@ class Model {
         return await this.users.then(result => result);
     }
 
-    async addUser(userDetails) {
-
-        let newUsers = await this.users;
-
-        const userToAdd = {
-            id: newUsers.length > 0 ? newUsers[newUsers.length - 1].id + 1 : 1,
-            name: userDetails.name,
-            surname: userDetails.surname,
-            sex: userDetails.sex,
-            dateOfBirth: userDetails.dateOfBirth,
-            email: userDetails.email
-        };
-        newUsers.push(userToAdd);
-        this.users = newUsers;
-        this._commit(this.users);
-    }
-
     _commit(users) {
         this.onUserListChanged(users);
         this.asyncLocalStorage.setUsers("users", users)
@@ -56,23 +57,24 @@ class Model {
 
     // -- function to generate users -- for developers -- (for use in the console)
     async generateUsers() {
-        const users = await fetch('https://randomuser.me/api/?results=5')
+        const users = await fetch('https://randomuser.me/api/?results=1')
             .then(response => response.json())
             .then(data => data.results)
             .catch(err => console.log(err.message));
 
         users.map(user => {
-            const sex = user.gender === "male" ? "Mężczyzna" : "Kobieta";
+            const gender = user.gender === "male" ? "Mężczyzna" : "Kobieta";
             const dateOfBirth = user.dob.date.substring(0, 10);
 
             const newUser = {
-                name: user.name.first,
-                surname: user.name.last,
-                sex,
+                firstName: user.name.first,
+                lastName: user.name.last,
+                gender,
                 dateOfBirth,
                 email: user.email,
             }
-            this.addUser(newUser);
+            console.log(newUser)
+            this.createUser(newUser);
         });
     }
 }

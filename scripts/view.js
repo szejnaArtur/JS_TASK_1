@@ -10,10 +10,10 @@ class View {
         this.addBtn = document.getElementById('add');
         this.refreshBtn = document.getElementById('refresh');
 
-        this.name = document.getElementById('name');
-        this.surname = document.getElementById('surname');
-        this.sex = document.getElementById('sex');
-        this.dateOfBirth = document.getElementById('date-of-birth');
+        this.firstName = document.getElementById('first_name');
+        this.lastName = document.getElementById('last_name');
+        this.gender = document.getElementById('gender');
+        this.dateOfBirth = document.getElementById('date_of_birth');
         this.email = document.getElementById('email');
     }
 
@@ -29,7 +29,7 @@ class View {
             users.forEach(user => {
                 const li = this._createElement('li');
                 li.id = user.id;
-                li.textContent = user.name + " " + user.surname;
+                li.textContent = user.firstName + " " + user.lastName;
                 li.addEventListener('click', () => this._showUserForm(user));
                 this.userList.append(li);
             })
@@ -41,6 +41,20 @@ class View {
         console.log("User list refreshed.");
     }
 
+    // Main handlers
+
+    bindAddUser = (handler) => {
+        this.saveBtn.addEventListener('click', () => {
+            const userDetails = this._getDetails;
+            if (userDetails.message) {
+                alert(userDetails.message);
+            } else {
+                handler(userDetails);
+                this._resetInputs();
+            }
+        })
+    }
+
 
     /*
     * // -- PRIVATE METHODS -- //
@@ -49,17 +63,17 @@ class View {
     * */
 
     _resetInputs() {
-        this.name.value = "";
-        this.surname.value = "";
-        this.sex.value = "Kobieta";
+        this.firstName.value = "";
+        this.lastName.value = "";
+        this.gender.value = "Kobieta";
         this.dateOfBirth.value = "";
         this.email.value = "";
     }
 
     _fillInputs(user) {
-        this.name.value = user.name;
-        this.surname.value = user.surname;
-        this.sex.value = user.sex;
+        this.firstName.value = user.firstName;
+        this.lastName.value = user.lastName;
+        this.gender.value = user.gender;
         this.dateOfBirth.value = user.dateOfBirth;
         this.email.value = user.email;
     }
@@ -108,4 +122,20 @@ class View {
         return element;
     }
 
+    get _getDetails() {
+        const firstName = this.firstName.value;
+        const lastName = this.lastName.value;
+        const gender = this.gender.value;
+        const dateOfBirth = this.dateOfBirth.value;
+        const email = this.email.value;
+
+        if (firstName < 3) {
+            return {message: "Imię powino mieć 3 lub wiecej znaków."};
+        }
+        if (lastName < 3) {
+            return {message: "Nazwisko powino mieć 3 lub wiecej znaków."};
+        }
+
+        return {firstName, lastName, gender, dateOfBirth, email};
+    }
 }

@@ -9,6 +9,7 @@ class Controller {
         this.handleRefreshUser().catch(err => console.log(err.message));
 
         this.model.bindUserListChanged(this.onUserListChanged);
+        this.view.bindAddUser(this.handleAddUser);
     }
 
     onUserListChanged = (users) => {
@@ -20,6 +21,10 @@ class Controller {
     handleRefreshUser = async () => {
         console.log("User refresher.")
         this.onUserListChanged(await this.model.getUsers());
+    }
+
+    handleAddUser = (userDetails) => {
+        this.model.createUser(userDetails).catch(err => console.log(err.message));
     }
 }
 
