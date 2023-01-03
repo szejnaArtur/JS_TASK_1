@@ -7,6 +7,8 @@ class Controller {
         this.view.attachEvents();
 
         this.handleRefreshUser().catch(err => console.log(err.message));
+
+        this.model.bindUserListChanged(this.onUserListChanged);
     }
 
     onUserListChanged = (users) => {
